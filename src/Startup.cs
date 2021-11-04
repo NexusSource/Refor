@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Refor.Services;
+using System.Security.Cryptography;
 
 namespace Refor
 {
@@ -19,6 +21,8 @@ namespace Refor
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IRandomStringService, RandomStringService>();
+            services.AddSingleton<RandomNumberGenerator, RNGCryptoServiceProvider>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
