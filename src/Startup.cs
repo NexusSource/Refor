@@ -23,6 +23,7 @@ namespace Refor
         {
             services.AddSingleton<IRandomStringService, RandomStringService>();
             services.AddSingleton<RandomNumberGenerator, RNGCryptoServiceProvider>();
+            services.AddScoped<ITextStoreService, TextStoreService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
