@@ -1,3 +1,4 @@
+using MicroElements.Swashbuckle.NodaTime;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -7,8 +8,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
 using Refor.Services;
 using System.Security.Cryptography;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 
 namespace Refor
 {
@@ -39,10 +43,19 @@ namespace Refor
                 options.UseSnakeCaseNamingConvention();
             });
 
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(c =>
+            {
+                c.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+                c.JsonSerializerOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Refor", Version = "v1" });
+
+                JsonSerializerOptions jsonOptions = new();
+                jsonOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+                jsonOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+                c.ConfigureForNodaTimeWithSystemTextJson(jsonOptions);
             });
         }
 
